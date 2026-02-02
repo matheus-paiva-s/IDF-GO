@@ -73,7 +73,7 @@ par_global <- otim_global$optim$bestmem
 obj_global <- otim_global$optim$bestval
 cat("DEoptim Obj:", obj_global, "\n")
 
-# 4. REFINAMENTO LOCAL (Loop Original) ----------------------------------------
+# 4. REFINAMENTO LOCAL  ----------------------------------------
 cat("\n>>> INICIANDO REFINAMENTO LOCAL (nloptr - 3 Algoritmos)...\n")
 
 melhor_res <- list(solution = par_global, objective = obj_global, method = "DEoptim")

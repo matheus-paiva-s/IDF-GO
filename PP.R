@@ -94,7 +94,7 @@ for(i in seq_along(Tr)) {
 metricas_ajuste <- calcular_metricas_erro(IDFe, IDF_final)
 cat("Métricas do Ajuste (vs GEV):\n"); print(metricas_ajuste)
 
-# --- [INSERÇÃO] CÁLCULO DAS MÉTRICAS GLOBAIS (EQUAÇÃO vs DADOS OBSERVADOS) ---
+# --- CÁLCULO DAS MÉTRICAS GLOBAIS (EQUAÇÃO vs DADOS OBSERVADOS) ---
 # 1. Prepara dados observados (Ordenação + Tr Empírico)
 annualMax_sorted <- annualMax
 for (j in 1:ncol(annualMax_sorted)) {
@@ -126,7 +126,7 @@ cat("\nMétricas Globais (vs Observado):\n"); print(metricas_globais)
 dir_out <- file.path("./Resultados/PP", cidade, distribuicao)
 if (!dir.exists(dir_out)) {dir.create(dir_out, recursive = TRUE)}
 
-# [AJUSTE] Salva lista completa com as novas métricas e dados de validação
+# Salva lista completa com as novas métricas e dados de validação
 saveRDS(list(
   params = par_final, 
   IDF = IDF_final,
