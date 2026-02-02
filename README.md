@@ -23,6 +23,14 @@ Execution script for the PEU methodology, with its own model-fitting
 logic. It shares the auxiliary functions from funcoes.R, allowing
 direct comparison with the PP methodology.
 
+DATA
+
+Series Selecionadas
+This folder contains the datasets used as input in the dissertation,
+including treated historical rainfall series and annual maximum
+precipitation intensities by duration.
+
+
 ORGANIZATION
 
 The separation between auxiliary functions and execution scripts is
