@@ -18,7 +18,7 @@ populacao_deoptim_mult <- 30
 estrategia_deoptim <- 4  
 metodos_busca_local <- c("NLOPT_LN_COBYLA", "NLOPT_LN_PRAXIS", "NLOPT_LN_BOBYQA")
 
-# 2. CARGA E PREPARAÇÃO -------------------------------------------------------
+# 2. CARREGAMENTO E PREPARAÇÃO -------------------------------------------------------
 dados_base <- carregar_dados(arquivo_estacao_unica)
 cod_estacao_atual <- as.character(dados_base$dados_estacoes$codEstacao[1])
 cidade <- as.character(dados_base$dados_estacoes$municipio)[1]
