@@ -1,5 +1,5 @@
 # IDF_GO
-Sample script of methodologies for constructing “PEU” and “PP” IDF curves for GEV and Gumbel distributions
+Sample script of methodologies for constructing “PEU”/"OSP" and “PP”/"SP" IDF curves for GEV and Gumbel distributions
 
 This set of R scripts performs the calculation of
 Intensity–Duration–Frequency (IDF) curves from annual maximum
@@ -28,12 +28,5 @@ DATA
 Series Selecionadas
 This folder contains the datasets used as input in the dissertation,
 including treated historical rainfall series and annual maximum
-precipitation intensities by duration.
-
-
-ORGANIZATION
-
-The separation between auxiliary functions and execution scripts is
-intended to improve methodological clarity, reproducibility, and code
-maintainability.
+precipitation intensities by duration. Raw data is avaliable at <http://www2.cemaden.gov.br/mapainterativo/>.
 
