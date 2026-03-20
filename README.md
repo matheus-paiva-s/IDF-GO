@@ -31,6 +31,7 @@ including treated historical rainfall series and annual maximum
 precipitation intensities by duration. Raw data is avaliable at <http://www2.cemaden.gov.br/mapainterativo/>.
 
 Appendix A
+
 Presents the detailed results of the Intensity-Duration-Frequency (IDF) equations
 fitting for eleven municipalities in the state of Goiás. 
 
