@@ -18,7 +18,7 @@ populacao_deoptim_mult <- 30
 estrategia_deoptim <- 4  
 metodos_busca_local <- c("NLOPT_LN_COBYLA", "NLOPT_LN_PRAXIS", "NLOPT_LN_BOBYQA")
 
-# 2. CARREGAMENTO E PREPARAÇÃO -------------------------------------------------------
+# 2. CARGA E PREPARAÇÃO -------------------------------------------------------
 dados_base <- carregar_dados(arquivo_estacao_unica)
 cod_estacao_atual <- as.character(dados_base$dados_estacoes$codEstacao[1])
 cidade <- as.character(dados_base$dados_estacoes$municipio)[1]
@@ -26,9 +26,10 @@ cidade <- as.character(dados_base$dados_estacoes$municipio)[1]
 dados_prep <- preparar_dados(dados_base$dados_limpos)
 df_completo <- completar_dados(dados_prep)
 pcp_10min <- df_completo %>% select(datahora, valorMedida, waterYear)
-
+names(pcp_10min)[2] <- "P.mm."
+#View(pcp_10min)
 annualMax <- calcular_maximos_anuais(pcp_10min, D_IDF)
-annualMax <- readRDS(file.choose()) # Caso queira carregar o arquivo já gerado
+annualMax <- readRDS(file.choose()) # Caso queira carregar
 
 # Limpeza e Ordenação
 for (j in seq_len(ncol(annualMax))) {
@@ -117,10 +118,24 @@ for(j in 1:ncol(annualMax_otim)) {
     }
   }
 }
-metrics <- calcular_metricas_erro(annualMax_otim, IDF_calc_otim)
-print(metrics)
+metrics1 <- calcular_metricas_erro(annualMax_otim, IDF_calc_otim) #Pool
+metrics_TR <- calcular_metricas_erro_eixo(annualMax_otim, IDF_calc_otim, "linha") #Métricas por TR
+print(metrics1)
+print(metrics_TR)
+
+
+# transforma listas em vetores nomeados
+m1 <- unlist(metrics1)
+m2 <- unlist(metrics_TR[c("RMSE","MAE","NSE","R2")])  # garante mesma ordem
+
+# diferença percentual (m2 vs m1)
+perc_diff <- (m2 - m1) / m1 * 100
+perc_diff
+
 
 dir_out <- file.path("./Resultados/PEU", cidade, distribuicao)
 if (!dir.exists(dir_out)) {dir.create(dir_out, recursive = TRUE)}
-saveRDS(list(params=par_final, metrics=metrics, IDF=IDF_final), file.path(dir_out, "resultados_peu.rds"))
+saveRDS(list(params=par_final, metrics_pool=metrics1, metrics_TR=metrics_TR, IDF=IDF_final), file.path(dir_out, "resultados_peu.rds"))
 plotar_curvas_idf(IDF_final, Tr, D_IDF, cidade, cod_estacao_atual, dir_out, "PEU")
+x<-readRDS(file.choose())
+

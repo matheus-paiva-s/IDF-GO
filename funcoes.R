@@ -4,9 +4,8 @@
 # ==============================================================================
 
 # Carregamento de pacotes 
-install.packages("pacman")
-library(pacman)
-pacman::p_load("tidyverse", "lubridate", "zoo", "evd", "DEoptim", "nloptr", "viridis", "gridExtra")
+pacotes <- c("tidyverse", "lubridate", "zoo", "evd", "DEoptim", "nloptr", "viridis", "gridExtra")
+sapply(pacotes, function(p) if(!require(p, character.only=T)) stop(paste("Instale:", p)))
 
 # ------------------------------------------------------------------------------
 # 1. DADOS
@@ -74,6 +73,7 @@ calcular_maximos_anuais <- function(pcp_10min, D_IDF) {
   
   return(annualMax)
 }
+
 
 # ------------------------------------------------------------------------------
 # 2. MODELOS ESTATÍSTICOS
@@ -151,6 +151,7 @@ calcular_erro_absoluto_total <- function(parametros, annualMax, Tjl, D_IDF_ativo
     obs_col <- annualMax[, j]
     tr_col <- Tjl[, j]
     
+    # Vetorização parcial para velocidade
     valid <- !is.na(obs_col) & !is.na(tr_col) & tr_col > 0
     if(!any(valid)) next
     
@@ -181,6 +182,60 @@ penalidade_suavidade <- function(I_model) {
 # ------------------------------------------------------------------------------
 # 4. EXPORTAÇÃO E PLOTS
 # ------------------------------------------------------------------------------
+
+
+calcular_metricas_erro_eixo <- function(observado, predito, eixo = c("coluna", "linha")) {
+  #coluna por duração e linha por TR
+  eixo <- match.arg(eixo)
+  
+  if (!all(dim(observado) == dim(predito))) {
+    stop("Dimensões devem ser iguais.")
+  }
+  
+  observado <- as.matrix(observado)
+  predito   <- as.matrix(predito)
+  
+  n <- if (eixo == "coluna") ncol(observado) else nrow(observado)
+  rmse_vec <- mae_vec <- nse_vec <- r2_vec <- rep(NA_real_, n)
+  
+  for (k in 1:n) {
+    if (eixo == "coluna") {
+      obs  <- observado[, k]
+      pred <- predito[, k]
+    } else {
+      obs  <- observado[k, ]
+      pred <- predito[k, ]
+    }
+    
+    valid <- complete.cases(obs, pred)
+    obs   <- obs[valid]
+    pred  <- pred[valid]
+    
+    if (length(obs) < 2) next
+    
+    res <- obs - pred
+    
+    rmse_vec[k] <- sqrt(mean(res^2))
+    mae_vec[k]  <- mean(abs(res))
+    
+    denom <- sum((obs - mean(obs))^2)
+    nse_vec[k] <- if (denom == 0) NA_real_ else 1 - sum(res^2) / denom
+    
+    r2_vec[k] <- if (sd(obs) == 0 || sd(pred) == 0) NA_real_ else cor(obs, pred)^2
+  }
+  
+  nome <- if (eixo == "coluna") "por_duracao" else "por_TR"
+  
+  out <- list(
+    RMSE = mean(rmse_vec, na.rm = TRUE),
+    MAE  = mean(mae_vec,  na.rm = TRUE),
+    NSE  = mean(nse_vec,  na.rm = TRUE),
+    R2   = mean(r2_vec,   na.rm = TRUE)
+  )
+  
+  out[[nome]] <- list(RMSE = rmse_vec, MAE = mae_vec, NSE = nse_vec, R2 = r2_vec)
+  out
+}
 
 calcular_metricas_erro <- function(observado, predito) {
   obs <- as.vector(as.matrix(observado)); pred <- as.vector(as.matrix(predito))
