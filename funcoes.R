@@ -261,7 +261,7 @@ plotar_curvas_idf <- function(IDF_mat, Tr, D_plot, cidade, cod_estacao, dir_said
   g <- ggplot(df, aes(x = D, y = Intensidade, color = Tr)) +
     geom_line(linewidth = 1) +
     scale_color_viridis_d(name = "TR (anos)") +
-    labs(title = paste(cidade, "-", cod_estacao), subtitle = prefixo, x = "Duração (min)", y = "Intensidade (mm/h)") +
+    labs(title = paste(cidade, "-", cod_estacao), subtitle = prefixo, x = "Duração (horas)", y = "Intensidade (mm/h)") +
     theme_minimal() + theme(legend.position = "bottom")
   
   dir.create(dir_saida, recursive = T, showWarnings = F)

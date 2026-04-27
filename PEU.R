@@ -1,11 +1,11 @@
 # ==============================================================================
 # SCRIPT: PEU.R (Procedimento de Etapa Única)
 # ==============================================================================
-source("./funcoes.R")
+source("./scripts/IDF-GO/funcoes.R")
 
 # 1. PARÂMETROS ORIGINAIS -----------------------------------------------------
 arquivo_estacao_unica <- file.choose()
-distribuicao <- "gumbel"      # "gumbel" ou "gev"
+distribuicao <- "gev"      # "gumbel" ou "gev"
 metodo_empirico <- "gringorten"
 D_IDF <- c(seq(10, 50, 10), seq(60, 1440, 60)) # Minutos
 D_IDF <- D_IDF/60
@@ -108,7 +108,7 @@ for(i in seq_along(Tr)) {
     IDF_final[i, j] <- calcular_intensidade_idf_modificada(Tr[i], D_IDF[j], par_final, distribuicao)
   }
 }
-
+View(IDF_final)
 # Métricas
 IDF_calc_otim <- matrix(NA, nrow(annualMax_otim), ncol(annualMax_otim))
 for(j in 1:ncol(annualMax_otim)) {
@@ -133,9 +133,8 @@ perc_diff <- (m2 - m1) / m1 * 100
 perc_diff
 
 
-dir_out <- file.path("./Resultados/PEU", cidade, distribuicao)
+dir_out <- file.path("./scripts/IDF-GO/Resultados/PEU", cidade, distribuicao)
 if (!dir.exists(dir_out)) {dir.create(dir_out, recursive = TRUE)}
 saveRDS(list(params=par_final, metrics_pool=metrics1, metrics_TR=metrics_TR, IDF=IDF_final), file.path(dir_out, "resultados_peu.rds"))
 plotar_curvas_idf(IDF_final, Tr, D_IDF, cidade, cod_estacao_atual, dir_out, "PEU")
-x<-readRDS(file.choose())
 
